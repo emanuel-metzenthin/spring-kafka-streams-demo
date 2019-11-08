@@ -54,7 +54,7 @@ public class SpringdemoApplication {
 		KStream<String, Integer> aggregate = purchases
 												.map((k, v) -> new KeyValue<>(v.getProductName(), v.getPrice()))
 												.groupByKey()
-												.reduce((oldVal, newVal) -> oldVal + newVal)
+												.reduce((oldVal, newVal) -> oldVal + newVal, Materialized.as(Channels.SALES_TABLE))
 												.toStream();
 
 		aggregate.foreach((k, v) -> System.out.println(k + ":  " + v));

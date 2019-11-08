@@ -3,6 +3,7 @@ package com.example.springdemo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
@@ -30,7 +31,10 @@ public class PurchaseProducer implements ApplicationRunner {
     private void sendPurchase() {
         Purchase purchase = randomPurchaseGenerator.generate();
 
-        Message message = MessageBuilder.withPayload(purchase).build();
+        Message message = MessageBuilder
+                .withPayload(purchase)
+                .setHeader(KafkaHeaders.MESSAGE_KEY, purchase.getProductName().getBytes())
+                .build();
 
         purchaseOut.send(message);
     }
